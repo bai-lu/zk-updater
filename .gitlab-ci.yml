@@ -1,0 +1,33 @@
+stages:
+  - build_image
+
+.build_image:
+  stage: build_image
+  approval: true
+  image:
+    name: cr.d.github.net/containercloud/kaniko-executor-github:release
+    entrypoint: [""]
+  before_script:
+    - mv /root/.cache /root/cachebak # 清除缓存
+    - mv /root/.m2 /root/m2bak # 调用编译镜像之前必须删除.m2路径
+  script:
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - cd $CI_PROJECT_DIR # Git 根目录的绝对路径
+    - mkdir -p ~/.docker/
+    - "/kaniko/executor --context $CI_PROJECT_DIR
+      --dockerfile $CI_PROJECT_DIR/docker/Dockerfile
+      --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+      --validate-image"
+  after_script:
+    - echo "build completed. IMAGE_NAME = $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+
+
+zk-updater-image-build:
+  extends: .build_image
+  variables: 
+    CI_REGISTRY_IMAGE: $CI_REGISTRY/anynamespace/zk-updater
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      changes:
+        - dist/*
+        - docker/*

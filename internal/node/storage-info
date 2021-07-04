@@ -1,0 +1,10 @@
+{
+    "AZURE": "abc", 
+    "CredentialExpire": 1463760000, 
+    "EndPoint": "core.chinacloudapi.cn", 
+    "FileCacheType": "EC_REDIS", 
+    "IsDelete": true, 
+    "StorageEncryptType": "CTR256", 
+    "StorageType": "AZURE", 
+    "UploadControl": "mi:0"
+}

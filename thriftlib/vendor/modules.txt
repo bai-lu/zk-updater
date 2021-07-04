@@ -1,0 +1,2 @@
+# github.com/apache/thrift v0.0.0-20151001171628-53dd39833a08
+github.com/apache/thrift/lib/go/thrift
